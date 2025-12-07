@@ -1,72 +1,46 @@
 #include "Globals.hpp"
-#include "I2CSensors.hpp"
-#include "HumidityS.hpp"
 #include "LogRecord.hpp"
+#include "process.hpp"
+TaskHandle_t sensorTaskHandle, serialOutTaskHandle;
 
-// Define Humidity Sensor Pins (Adjust if you wired differently)
-#define HUMIDITY_ANALOG_PIN 26
-#define HUMIDITY_DIGITAL_PIN 22
-
-void setup() {
+void setup(){
+  //Serial Stuff
   Serial.begin(115200);
-  delay(3000); // Wait for Serial to be ready
-  Serial.println("\n--- RaspIGLake Full System Test ---");
+  //while(!Serial);
+  Serial.println("Started Serial!");
 
-  // 1. Initialize I2C (GP4 SDA, GP5 SCL)
+  //Sensors initialisation
   Wire.begin();
+  Wire.setClock(400000); //400khz I2C bus speed for High frequency Logging
+  beginBMP();
+  beginMPU();
 
-  // 2. Initialize BMP280
-  Serial.print("Initializing BMP280... ");
-  if (beginBMP()) {
-    Serial.println("OK!");
-  } else {
-    Serial.println("FAILED! Check wiring.");
-  }
+  //Queue Setup
+  sensorQueue = xQueueCreate(256, sizeof(LogRecord));
 
-  // 3. Initialize MPU6050
-  Serial.print("Initializing MPU6050... ");
-  if (beginMPU()) { 
-    Serial.println("OK!");
-  } else {
-    Serial.println("FAILED! Check wiring.");
-  }
+  //Task Setup
+  xTaskCreate(
+    vSensorThread,
+    "SensorTask",
+    7000,
+    NULL,
+    2,
+    &sensorTaskHandle
+  );
+  xTaskCreate(
+    vSerialOutThread,
+    "SerialOutTask",
+    7000,
+    NULL,
+    2,
+    &serialOutTaskHandle
+  );
 
-  // 4. Initialize Humidity Sensor Pins
-  pinMode(HUMIDITY_DIGITAL_PIN, INPUT);
-  // Analog pin (GP26) doesn't need pinMode on Pico for analogRead, but good practice
-  pinMode(HUMIDITY_ANALOG_PIN, INPUT);
-  Serial.println("Humidity Sensor Pins Configured.");
+  //Task Core setup, 1 = Core0, 2 = Core1 and 3 = Both
+  vTaskCoreAffinitySet(sensorTaskHandle, 1); 
+  vTaskCoreAffinitySet(sensorTaskHandle, 2); 
 }
 
-void loop() {
-  Serial.println("\n------------------------------------------------");
-  unsigned long currentTimestamp = millis();
-
-  // --- 1. Gather Data ---
-  BMPdata bmpData = measBMP();
-  IMUData imuData = readMPU();
-  
-  // Read Humidity (pass pins explicitly to be safe)
-  HumidityData humData = getHumidity(HUMIDITY_ANALOG_PIN, HUMIDITY_DIGITAL_PIN, true);
-
-  // --- 2. Create Log Record ---
-  LogRecord record(currentTimestamp, imuData, bmpData, humData);
-
-  // --- 3. Display Data (using LogRecord's display method) ---
-  Serial.println(">>> LogRecord Content:");
-  record.display();
-
-  // --- 4. Test CSV Formatting ---
-  char csvBuffer[256];
-  record.toCSV(csvBuffer, sizeof(csvBuffer));
-  Serial.print(">>> CSV Output: ");
-  Serial.println(csvBuffer);
-
-  // --- 5. Test Binary Packing (for radio transmission) ---
-  PackedRecord packed = packRecord(record);
-  Serial.print(">>> Packed Size: ");
-  Serial.print(sizeof(packed));
-  Serial.println(" bytes");
-
-  delay(2000);
+void loop(){
+  vTaskDelete(NULL);
 }

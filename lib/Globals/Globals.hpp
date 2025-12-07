@@ -10,3 +10,4 @@
 extern Adafruit_MPU6050 mpu;
 extern Adafruit_BMP280 bmp;
 
+extern QueueHandle_t sensorQueue;

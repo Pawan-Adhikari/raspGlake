@@ -1,7 +1,7 @@
 #pragma once
 #include <Arduino.h>
-const float RAW_MAX_DRY = 6436.9305; 
-const float RAW_MIN_WET = 4929.9705;
+const float RAW_MAX_DRY = 1005.00; 
+const float RAW_MIN_WET = 10.00;
 
 struct HumidityData{
     bool isDry = true;

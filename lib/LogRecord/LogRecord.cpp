@@ -71,6 +71,8 @@ PackedRecord packRecord(const LogRecord &r) {
 }
 
 void sendRecord(const PackedRecord &r) {
-    Serial2.write(0xAA);                  // Start byte
-    Serial2.write((const uint8_t*)&r, sizeof(PackedRecord));  // Raw bytes
+    //Serial2.write(0xAA);                  // Start byte
+    //Serial2.write((const uint8_t*)&r, sizeof(PackedRecord));  // Raw bytes
+    Serial.write(0xAA);                  // Start byte
+    Serial.write((const uint8_t*)&r, sizeof(PackedRecord));  // Raw bytes
 }
