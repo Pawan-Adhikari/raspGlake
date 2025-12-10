@@ -2,9 +2,10 @@
 #include "Globals.hpp"
 #include "I2CSensors.hpp"
 #include "HumidityS.hpp"
-#include "LogRecord.hpp"
-#define RX2_PIN 15
-#define TX2_PIN 14
+#include "Packets.hpp"
 
-void vSensorThread(void* parameter);
-void vSerialOutThread(void* parameter);
+void vOtherSensorsThread(void *parameter);
+void vIMUThread(void *parameter);
+void vIMUSerialOutThread(void *parameter);
+void vOtherSensorsSerialOutThread(void *parameter);
+void vBlinkTask(void *params);

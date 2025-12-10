@@ -68,6 +68,7 @@ void BMPdata::display() const {
         Serial.println("m");
     }
 
+/*
 void IMUData::display() const {
         Serial.println("Acceleration, XYZ: ");
         Serial.println(accelX);
@@ -78,3 +79,4 @@ void IMUData::display() const {
         Serial.println(gyroY);
         Serial.println(gyroZ);
     }
+*/

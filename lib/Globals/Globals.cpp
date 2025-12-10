@@ -3,4 +3,6 @@
 Adafruit_MPU6050 mpu;
 Adafruit_BMP280 bmp;
 
-QueueHandle_t sensorQueue;
+QueueHandle_t IMUQueue;
+QueueHandle_t OtherSensorQueue;
+
