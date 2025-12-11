@@ -30,7 +30,7 @@ void setup(){
 
   //Queue Setup
   IMUQueue = xQueueCreate(512, sizeof(IMUPacket));
-  OtherSensorQueue = xQueueCreate(128, sizeof(OtherSensorPacket));
+  OtherSensorQueue = xQueueCreate(128, sizeof(OtherSensorsPacket));
 
 
   //Task Setup

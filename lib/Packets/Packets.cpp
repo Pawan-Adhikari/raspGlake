@@ -27,11 +27,6 @@ unsigned char getChecksum(const uint8_t *data, int sz){
     return checksum;
 }
 
-template <class T>
-void setChecksum(T *pkt){
-    pkt->checksum = getChecksum((uint8_t *)pkt, sizeof(T)-1);
-}
-
 /*
 packet packRecord(const LogRecord &r) {
     PackedRecord p;

@@ -35,7 +35,7 @@ void vOtherSensorsThread(void *parameter){
 
     OtherSensorsPacket opkt;
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = 60000; //60000ms = 60s
+    const TickType_t xFrequency = 1000; //60000ms = 60s
 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
@@ -107,12 +107,12 @@ void vIMUSerialOutThread(void *parameter) {
 
 void vOtherSensorsSerialOutThread(void *parameter) {
   //Serial.println("vOtherSensorsSerialOutThread: STARTED");
-  OtherSensorPacket opkt;
+  OtherSensorsPacket opkt;
 
   for(;;) {
     if (xQueueReceive(OtherSensorQueue, &opkt, portMAX_DELAY) == pdTRUE) {
         //Serial.println("Received an OtherSensorPacket!");
-        Serial.write((uint8_t*)&opkt, sizeof(OtherSensorPacket));
+        Serial.write((uint8_t*)&opkt, sizeof(OtherSensorsPacket));
     }
 
   }
