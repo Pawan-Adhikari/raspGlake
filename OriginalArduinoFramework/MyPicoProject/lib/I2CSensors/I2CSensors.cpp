@@ -40,7 +40,7 @@ IMUData readMPU(){
     
     if(!mpu.getEvent(&a, &g, &temp)){
         if(!beginMPU()){
-            Serial.println("MPU6050 couldn't initialise.");
+            //Serial.println("MPU6050 couldn't initialise.");
             return imuReadings;
         }
         else mpu.getEvent(&a, &g, &temp);
@@ -68,7 +68,7 @@ void BMPdata::display() const {
         Serial.println("m");
     }
 
-/*
+
 void IMUData::display() const {
         Serial.println("Acceleration, XYZ: ");
         Serial.println(accelX);
@@ -79,4 +79,3 @@ void IMUData::display() const {
         Serial.println(gyroY);
         Serial.println(gyroZ);
     }
-*/

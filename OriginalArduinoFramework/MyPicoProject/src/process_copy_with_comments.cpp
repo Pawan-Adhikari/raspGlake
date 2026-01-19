@@ -1,0 +1,78 @@
+#define __FREERTOS 1
+#include "process.hpp"
+
+void vOtherSensorsThread(void *parameter){
+
+    OtherSensorsPacket opkt;
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = 10000; //60000ms = 60s
+
+    while (1){
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        opkt.timestamp_ms = millis();
+        opkt.bmp = measBMP();
+        opkt.hum = getHumidity(26, 22, true);
+        setChecksum<OtherSensorsPacket>(&opkt);
+        
+        xQueueSend(OtherSensorQueue, &opkt, 1);
+        //opkt.display();
+    }
+}
+
+void vIMUThread(void *parameter){
+
+    IMUPacket ipkt;
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = 12; //12ms = 83.33hz
+
+    while (1){
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        ipkt.timestamp_ms = millis();
+        ipkt.imu = readMPU();
+        setChecksum<IMUPacket>(&ipkt);
+        ipkt.imu.display();
+        //xQueueSend(IMUQueue, &ipkt, 1);
+        xStreamBufferSend(xIMUStream, &ipkt, sizeof(IMUPacket), 1);
+    }
+}
+
+void vIMUSerialOutThread(void *parameter) {
+  Serial.println("vIMUSerialOutThread: STARTED");
+  //IMUPacket ipkt;
+  char buffer[20000];
+  size_t bytes_read;
+  for(;;) { 
+    bytes_read = xStreamBufferReceive(xIMUStream, buffer, sizeof(buffer), portMAX_DELAY);
+    //if (xQueueReceive(IMUQueue, &ipkt, portMAX_DELAY) == pdTRUE) {
+    if (bytes_read > 0) {
+        //Serial.println("Received an IMUSensorPacket!");
+        //Serial.write((uint8_t*)&ipkt, sizeof(IMUPacket));
+        Serial.write((uint8_t*)buffer, sizeof(buffer));
+    }
+  }
+}
+
+void vOtherSensorsSerialOutThread(void *parameter) {
+  //Serial.println("vOtherSensorsSerialOutThread: STARTED");
+  OtherSensorsPacket opkt;
+
+  for(;;) {
+    if (xQueueReceive(OtherSensorQueue, &opkt, portMAX_DELAY) == pdTRUE) {
+        //Serial.println("Received an OtherSensorPacket!");
+        Serial.write((uint8_t*)&opkt, sizeof(OtherSensorsPacket));
+    }
+  }
+}
+
+/*
+void vBlinkTask(void *params){
+    for(;;){
+        digitalWrite(LED_BUILTIN, HIGH);
+        vTaskDelay(2000/portTICK_PERIOD_MS);
+        digitalWrite(LED_BUILTIN, LOW);      
+        vTaskDelay(1000/portTICK_PERIOD_MS);
+    }
+}
+*/

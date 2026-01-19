@@ -1,3 +1,4 @@
+#define __FREERTOS 1
 #pragma once
 #include "Globals.hpp"
 #include "I2CSensors.hpp"
@@ -8,4 +9,4 @@ void vOtherSensorsThread(void *parameter);
 void vIMUThread(void *parameter);
 void vIMUSerialOutThread(void *parameter);
 void vOtherSensorsSerialOutThread(void *parameter);
-void vBlinkTask(void *params);
+//void vBlinkTask(void *params);

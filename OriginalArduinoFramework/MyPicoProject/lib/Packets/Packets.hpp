@@ -32,6 +32,11 @@ struct OtherSensorsPacket {
 
     //Checksum
     uint8_t checksum;
+
+    void display(){
+        bmp.display();
+        hum.display();
+    }
 };
 #pragma pack(pop)
 
@@ -49,6 +54,8 @@ struct IMUPacket {
     //Checksum
     uint8_t checksum;
 
+
+
 };
 #pragma pack(pop)
 
@@ -60,6 +67,7 @@ template <class T>
 void setChecksum(T *pkt){
     pkt->checksum = getChecksum((uint8_t *)pkt, sizeof(T)-1);
 }
+
 
 
 //packet packRecord(const LogRecord &r);

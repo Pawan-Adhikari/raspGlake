@@ -1,3 +1,4 @@
+#define __FREERTOS 1
 #include "Globals.hpp"
 #include "Packets.hpp"
 #include "process.hpp"
@@ -9,18 +10,7 @@ void setup(){
   pinMode(LED_BUILTIN, OUTPUT);
   //Serial Stuff
   Serial.begin(115200);
-  //Serial1.begin(115200);
   delay(1000);
-  //Serial.println("Started Serials!");
-  /*
-  SPI.setRX(16);
-  SPI.setCS(17);
-  SPI.setSCK(18);
-  SPI.setTX(19);
-  SPI.begin(true); // true = Slave mode
-  */
-  //pinMode(DATA_READY_PIN, OUTPUT);
-  //digitalWrite(DATA_READY_PIN, LOW);
 
   //Sensors initialisation
   Wire.begin();
@@ -29,22 +19,12 @@ void setup(){
   beginMPU();
 
   //Queue Setup
-  IMUQueue = xQueueCreate(512, sizeof(IMUPacket));
-  OtherSensorQueue = xQueueCreate(128, sizeof(OtherSensorsPacket));
+  //IMUQueue = xQueueCreate(1024, sizeof(IMUPacket));
+  OtherSensorQueue = xQueueCreate(32, sizeof(OtherSensorsPacket));
+  xIMUStream = xStreamBufferCreate(24000, 20000);
 
 
   //Task Setup
-
-  /*
-  xTaskCreate(
-    vSensorThread,
-    "SensorTask",
-    2048,
-    NULL,
-    2,
-    &sensorTaskHandle
-  );
-  */
 
   xTaskCreate(
     vIMUThread,
@@ -67,7 +47,7 @@ void setup(){
   xTaskCreate(
     vIMUSerialOutThread,
     "vIMUSerialOutTask",
-    2048,
+    5256,
     NULL,
     2,
     &IMUSerialOutTaskHandle
@@ -80,15 +60,6 @@ void setup(){
     NULL,
     2,
     &OtherSensorSerialOutTaskHandle
-  );
-
-  xTaskCreate(
-    vBlinkTask,
-    "Blinker",
-    256,
-    NULL,
-    1,
-    NULL
   );
 
   //Task Core setup, 1 = Core0, 2 = Core1 and 3 = Both 

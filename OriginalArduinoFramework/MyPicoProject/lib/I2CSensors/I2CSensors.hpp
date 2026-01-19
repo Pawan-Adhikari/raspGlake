@@ -20,7 +20,7 @@ struct IMUData {
     float gyroY = 0.0;
     float gyroZ = 0.0;
 
-    //void display() const ;
+    void display() const ;
 };
 #pragma pack(pop)
 
