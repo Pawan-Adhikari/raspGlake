@@ -6,20 +6,18 @@
 TaskHandle_t OtherSensorsTaskHandle, OtherSensorSerialOutTaskHandle, IMUTaskHandle, IMUSerialOutTaskHandle;
 
 void setup(){
-  //Board status
-  pinMode(LED_BUILTIN, OUTPUT);
   //Serial Stuff
   Serial.begin(115200);
   delay(1000);
 
   //Sensors initialisation
-  Wire.begin();
-  Wire.setClock(400000); //400khz I2C bus speed for High frequency Logging
+  Wire.setSDA(20); // Using GP16
+  Wire.setSCL(21);
+  Wire.begin(); 
   beginBMP();
   beginMPU();
 
   //Queue Setup
-  //IMUQueue = xQueueCreate(1024, sizeof(IMUPacket));
   OtherSensorQueue = xQueueCreate(32, sizeof(OtherSensorsPacket));
   xIMUStream = xStreamBufferCreate(24000, 20000);
 

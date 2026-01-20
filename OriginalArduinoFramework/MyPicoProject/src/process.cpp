@@ -18,13 +18,13 @@ void vOtherSensorsThread(void *parameter){
 void vIMUThread(void *parameter){
     IMUPacket ipkt;
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = 12; 
+    const TickType_t xFrequency = 20; 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
         ipkt.timestamp_ms = millis();
         ipkt.imu = readMPU();
         setChecksum<IMUPacket>(&ipkt);
-        ipkt.imu.display();
+        //ipkt.imu.display();
         xStreamBufferSend(xIMUStream, &ipkt, sizeof(IMUPacket), 1);
     }
 }
