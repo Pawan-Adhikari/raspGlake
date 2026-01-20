@@ -4,13 +4,14 @@
 void vOtherSensorsThread(void *parameter){
     OtherSensorsPacket opkt;
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = 10000; 
+    const TickType_t xFrequency = 1000; 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
         opkt.timestamp_ms = millis();
         opkt.bmp = measBMP();
         opkt.hum = getHumidity(26, 22, true);
         setChecksum<OtherSensorsPacket>(&opkt);
+        //opkt.bmp.display();
         xQueueSend(OtherSensorQueue, &opkt, 1);
     }
 }
@@ -24,7 +25,6 @@ void vIMUThread(void *parameter){
         ipkt.timestamp_ms = millis();
         ipkt.imu = readMPU();
         setChecksum<IMUPacket>(&ipkt);
-        //ipkt.imu.display();
         xStreamBufferSend(xIMUStream, &ipkt, sizeof(IMUPacket), 1);
     }
 }
