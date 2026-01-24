@@ -8,3 +8,4 @@ QueueHandle_t IMUQueue;
 QueueHandle_t OtherSensorQueue;
 StreamBufferHandle_t xIMUStream;
 SemaphoreHandle_t xSerialMutex;
+SemaphoreHandle_t xI2CMutex;

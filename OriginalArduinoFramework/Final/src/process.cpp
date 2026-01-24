@@ -7,11 +7,19 @@ void vOtherSensorsThread(void *parameter){
     const TickType_t xFrequency = 10000; 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        xSemaphoreTake(xI2CMutex, portMAX_DELAY);
         opkt.timestamp_ms = millis();
-        opkt.bmp = measBMP();
+        opkt.bmp = measBMP(0x76);
         opkt.hum = getHumidity(26, 22, true);
+        xSemaphoreGive(xI2CMutex);
+
         setChecksum<OtherSensorsPacket>(&opkt);
+
+        //xSemaphoreTake(xSerialMutex, portMAX_DELAY);
         //opkt.bmp.display();
+        //xSemaphoreGive(xSerialMutex);
+
         xQueueSend(OtherSensorQueue, &opkt, 1);
     } 
 }
@@ -22,9 +30,18 @@ void vIMUThread(void *parameter){
     const TickType_t xFrequency = 100; 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
+
+        xSemaphoreTake(xI2CMutex, portMAX_DELAY);
         ipkt.timestamp_ms = millis();
-        ipkt.imu = readMPU();
+        ipkt.imu = readMPU(&Wire, 0x68);
+        xSemaphoreGive(xI2CMutex);
+
         setChecksum<IMUPacket>(&ipkt);
+
+        //xSemaphoreTake(xSerialMutex, portMAX_DELAY);
+        //ipkt.imu.display();
+        //xSemaphoreGive(xSerialMutex);
+
         xStreamBufferSend(xIMUStream, &ipkt, sizeof(IMUPacket), 1);
     }
 }

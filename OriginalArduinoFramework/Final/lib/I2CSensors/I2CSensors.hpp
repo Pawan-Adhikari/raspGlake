@@ -1,0 +1,32 @@
+#pragma once
+#include "Globals.hpp"
+#include "HumidityS.hpp"
+
+#pragma pack(push, 1)
+struct BMPdata {
+    float temperatureIN = -1;
+    float temperatureOUT = -1;
+    float pressure = -1; 
+    void display() const;
+};
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct IMUData {
+    float accelX = -1.0;
+    float accelY = -1.0;
+    float accelZ = -1.0;
+    
+    float gyroX = 0.0;
+    float gyroY = 0.0;
+    float gyroZ = 0.0;
+
+    void display() const ;
+};
+#pragma pack(pop)
+
+bool beginBMP(uint8_t address = 0x76);
+bool beginMPU(TwoWire *myWire = &Wire, uint8_t address = 0x68);
+BMPdata measBMP(uint8_t address = 0x76);
+IMUData readMPU(TwoWire *myWire = &Wire, uint8_t address = 0x68);
+

@@ -4,23 +4,28 @@
 #include "process.hpp"
 
 TaskHandle_t OtherSensorsTaskHandle, OtherSensorSerialOutTaskHandle, IMUTaskHandle, IMUSerialOutTaskHandle;
+//Adafruit_BMP280 bmp;
+//Adafruit_MPU6050 mpu;
 
 void setup(){
   //Serial Stuff
   Serial.begin(115200);
-  delay(1000);
+  delay(3000);
 
   //Sensors initialisation
-  Wire.setSDA(20); // Using GP16
-  Wire.setSCL(21);
+  Wire.setSDA(16); // Using GP16
+  Wire.setSCL(17);
+  analogReadResolution(12);
+
   Wire.begin(); 
-  beginBMP();
-  beginMPU();
+  beginBMP(0x76);
+  beginMPU(&Wire, 0x68);
 
   //Queue Setup
   OtherSensorQueue = xQueueCreate(32, sizeof(OtherSensorsPacket));
   xIMUStream = xStreamBufferCreate(4000, 3000);
-  //xSerialMutex = xSemaphoreCreateMutex();
+  xSerialMutex = xSemaphoreCreateMutex();
+  xI2CMutex = xSemaphoreCreateMutex();
 
 
   //Task Setup

@@ -17,4 +17,5 @@ extern QueueHandle_t IMUQueue;
 extern QueueHandle_t OtherSensorQueue;
 extern StreamBufferHandle_t xIMUStream;
 extern SemaphoreHandle_t xSerialMutex;
+extern SemaphoreHandle_t xI2CMutex;
 
