@@ -12,4 +12,4 @@ struct HumidityData{
 #pragma pack(pop)
 
 HumidityData getHumidity(int aPin = 26, int dPin = 22, bool scale = false);
-float getOutTemp(int apin = 27);
+float getOutTemp(int aPin = 27);

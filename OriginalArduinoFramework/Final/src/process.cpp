@@ -4,7 +4,7 @@
 void vOtherSensorsThread(void *parameter){
     OtherSensorsPacket opkt;
     TickType_t xLastWakeTime = xTaskGetTickCount();
-    const TickType_t xFrequency = 10000; 
+    const TickType_t xFrequency = 1000; 
     while (1){
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
 
@@ -16,9 +16,9 @@ void vOtherSensorsThread(void *parameter){
 
         setChecksum<OtherSensorsPacket>(&opkt);
 
-        //xSemaphoreTake(xSerialMutex, portMAX_DELAY);
-        //opkt.bmp.display();
-        //xSemaphoreGive(xSerialMutex);
+        xSemaphoreTake(xSerialMutex, portMAX_DELAY);
+        opkt.bmp.display();
+        xSemaphoreGive(xSerialMutex);
 
         xQueueSend(OtherSensorQueue, &opkt, 1);
     } 
@@ -53,7 +53,7 @@ void vIMUSerialOutThread(void *parameter) {
     bytes_read = xStreamBufferReceive(xIMUStream, buffer, sizeof(buffer), portMAX_DELAY);
     if (bytes_read > 0) {
       //xSemaphoreTake(xSerialMutex, portMAX_DELAY);
-      Serial.write((uint8_t*)buffer, sizeof(buffer));
+      //Serial.write((uint8_t*)buffer, sizeof(buffer));
       //xSemaphoreGive(xSerialMutex);
     }
   }
@@ -64,7 +64,7 @@ void vOtherSensorsSerialOutThread(void *parameter) {
   for(;;) {
     if (xQueueReceive(OtherSensorQueue, &opkt, portMAX_DELAY) == pdTRUE) {
       //xSemaphoreTake(xSerialMutex, portMAX_DELAY);
-      Serial.write((uint8_t*)&opkt, sizeof(OtherSensorsPacket));
+      //Serial.write((uint8_t*)&opkt, sizeof(OtherSensorsPacket));
       //xSemaphoreGive(xSerialMutex);
     }
   }

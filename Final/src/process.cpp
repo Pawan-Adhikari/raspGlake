@@ -11,7 +11,7 @@ void vOtherSensorsThread(void *parameter){
         xSemaphoreTake(xI2CMutex, portMAX_DELAY);
         opkt.timestamp_ms = millis();
         opkt.bmp = measBMP(0x76);
-        opkt.hum = getHumidity(26, 22, true);
+        opkt.hum = getHumidity(26, 22, false);
         xSemaphoreGive(xI2CMutex);
 
         setChecksum<OtherSensorsPacket>(&opkt);

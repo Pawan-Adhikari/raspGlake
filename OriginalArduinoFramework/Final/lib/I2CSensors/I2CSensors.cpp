@@ -60,11 +60,11 @@ IMUData readMPU(TwoWire *myWire, uint8_t address){
 void BMPdata::display() const {
 
         Serial.println("TempIN, TempOUT and Pressure: ");
-        Serial.println(temperatureIN);
+        Serial.print(temperatureIN);
         Serial.println("Celsius");
-        Serial.println(temperatureOUT);
+        Serial.print(temperatureOUT);
         Serial.println("Celsius");
-        Serial.println(pressure);
+        Serial.print(pressure);
         Serial.println("Pa");
 
     }
