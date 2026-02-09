@@ -21,9 +21,17 @@ HumidityData getHumidity(int aPin, int dPin, bool scale){
         Serial.println(isDry);
     }
 
+/*
 float getOutTemp(int aPin){
+
     float analogValue = analogRead(aPin);
     float voltage = analogValue * (3.3 / 4095.0);
     float temperatureC = voltage / 0.01;
     return temperatureC;
 }
+*/
+float getOutTemp(){
+    float temperatureC = thermocouple.readCelsius();
+    return temperatureC;
+}
+

@@ -29,7 +29,7 @@ BMPdata measBMP(uint8_t address){
     if (bmp.sensorID() != BMP280_CHIPID) beginBMP(address);
     if (bmp.takeForcedMeasurement()) {
         bmpReadings.temperatureIN = bmp.readTemperature();
-        bmpReadings.temperatureOUT = getOutTemp(27);
+        bmpReadings.temperatureOUT = getOutTemp();
         bmpReadings.pressure = bmp.readPressure();
         //bmpReadings.altitude = bmp.readAltitude(1013.25);
     }

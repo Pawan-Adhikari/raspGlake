@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <Adafruit_MPU6050.h>
 #include <Adafruit_BMP280.h>
+#include <max6675.h>
 #include <FreeRTOS.h>
 #include <stream_buffer.h>
 
@@ -12,6 +13,7 @@
 
 extern Adafruit_MPU6050 mpu;
 extern Adafruit_BMP280 bmp;
+extern MAX6675 thermocouple;
 
 extern QueueHandle_t IMUQueue;
 extern QueueHandle_t OtherSensorQueue;

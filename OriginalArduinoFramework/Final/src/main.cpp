@@ -15,7 +15,6 @@ void setup(){
   //Sensors initialisation
   Wire.setSDA(16); // Using GP16
   Wire.setSCL(17);
-  analogReadResolution(12);
 
   Wire.begin(); 
   beginBMP(0x76);
